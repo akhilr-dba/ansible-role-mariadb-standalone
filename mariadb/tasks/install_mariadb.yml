@@ -1,0 +1,62 @@
+---
+- name: Ensure MariaDB repository is installed
+  yum_repository:
+     name: MariaDB
+     description: MariaDB Repository for {{ mariadb_version }}
+     baseurl: https://yum.mariadb.org/{{ mariadb_version }}/{{ ansible_distribution|lower }}{{ ansible_distribution_major_version}}-amd64
+     gpgkey: https://yum.mariadb.org/RPM-GPG-KEY-MariaDB
+     gpgcheck: yes
+     
+- name: Install MariaDB Packages
+  yum:
+     name: "{{ mariadb_packages }}"
+     state: present
+     update_cache: true
+  become: true
+
+- name: Check if client config file exists
+  stat:
+     path: /home/mysql/.my.cnf
+  register: mycnf
+
+- name: Copy .my.cnf file 
+  template:
+     src: .my.cnf.j2
+     dest: "{{ mariadb_client_file }}"
+     mode: 0644
+     owner: mysql
+     group: mysql
+  when: mycnf.stat.exists == false
+
+- name: Copy my.cnf global configuration
+  template:
+     src: my.cnf.j2
+     dest: "{{ mariadb_config_file }}"
+     mode: 0644
+     owner: mysql
+     group: mysql
+# notify: restart mariadb
+
+- name: Running MySQL Installs DB
+  command: mysql_install_db --datadir={{ mariadb_datadir }} --rpm
+  register: install_db_output
+
+- name: Change Permissinons
+  command: "chown -R mysql:mysql {{ item }}"
+  with_items: "{{ mariadb_directories }}"
+
+- name: Start and enable the mysql service
+  service: "name={{ mariadb_daemon }} state=started enabled=true"
+
+- name: Delete Un-necessary users
+  command: 'mysql -u root -NBe "{{ item }}"'
+  with_items:
+     - DELETE FROM mysql.user WHERE user NOT IN ('root','mariadb.sys')
+     - FLUSH PRIVILEGES
+  changed_when: false
+
+- name: Change Root Password
+  shell: > 
+     mysql -u root -NBe "ALTER USER 'root'@'localhost' IDENTIFIED BY '{{ mariadb_password }}'; FLUSH PRIVILEGES;"
+  when: not mycnf.stat.exists
+

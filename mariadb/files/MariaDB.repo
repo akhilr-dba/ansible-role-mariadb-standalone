@@ -1,0 +1,8 @@
+# MariaDB 10.4.21 CentOS repository list
+# https://downloads.mariadb.org/mariadb/repositories/
+[mariadb]
+name = MariaDB
+baseurl = https://yum.mariadb.org/10.4.21/centos7-amd64
+gpgkey=https://yum.mariadb.org/RPM-GPG-KEY-MariaDB
+gpgcheck=1
+

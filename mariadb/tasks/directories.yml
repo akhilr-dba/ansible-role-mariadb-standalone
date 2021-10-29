@@ -1,0 +1,30 @@
+---
+- name: Create mysql linux user
+  user: 
+     name: mysql
+     state: present
+     createhome: yes
+     home: /home/mysql
+
+- name: Add mysql linux user to sudoers 
+  lineinfile:
+     dest: /etc/sudoers
+     state: present
+     regexp: '^%mysql'
+     line: '%mysql ALL=(ALL) NOPASSWD: ALL'
+     validate: 'visudo -cf %s'
+
+- name: Create mysql directories
+  file: 
+     path: "{{ item }}"
+     state: directory
+     owner: mysql
+     group: mysql
+     mode: u=rwX,g=rX,o=rX
+     recurse: yes
+  loop:
+      - /opt/mysql/data
+      - /opt/mysql/binlogs
+      - /var/log/mysql
+      - /etc/my.cnf.d
+      - /var/run/mysqld

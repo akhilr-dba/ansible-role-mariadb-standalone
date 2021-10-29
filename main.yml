@@ -1,0 +1,6 @@
+- name: Running MariaDB 
+  hosts: dbservers
+  become: True
+  roles:
+    - mariadb
+

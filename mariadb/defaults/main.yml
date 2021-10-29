@@ -1,0 +1,30 @@
+---
+# defaults file for mariadb
+mariadb_user: mysql
+mariadb_login_user: root
+mariadb_password: admin
+mariadb_daemon: mariadb
+mariadb_version: 10.4.21
+mariadb_packages:
+  - mariadb
+  - mariadb-server
+  - MySQL-python
+  - perl-DBD-MySQL
+  - MariaDB-backup.x86_64
+
+mariadb_directories:
+  - /opt/mysql
+  - /var/log/mysql/
+  - /etc/my.cnf.d/
+  - /var/run/mysqld/
+mariadb_port : 3306
+mariadb_socket : /var/lib/mysql/mysql.sock
+mariadb_binlog_format : ROW
+mariadb_datadir : /opt/mysql/data
+mariadb_pid : /var/run/mysqld/mysqld.pid
+mariadb_sql_mode : STRICT_TRANS_TABLES,NO_ENGINE_SUBSTITUTION,NO_AUTO_CREATE_USER
+mariadb_log_error : /var/log/mysql/mariadb.log
+mariadb_log_warnings : 2
+mariadb_client_file: /home/mysql/.my.cnf
+mariadb_config_file: /etc/my.cnf
+mariadb_log_bin: /opt/mysql/binlogs/mysql-bin

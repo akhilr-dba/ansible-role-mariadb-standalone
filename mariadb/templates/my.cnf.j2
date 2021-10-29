@@ -1,0 +1,16 @@
+[client]
+user = {{ mariadb_user }}
+port = {{ mariadb_port }}
+socket = {{ mariadb_socket }}
+
+[mysqld]
+port = {{ mariadb_port }}
+socket = {{ mariadb_socket }}
+binlog_format = {{ mariadb_binlog_format }}
+datadir = {{ mariadb_datadir }}
+pid-file = {{ mariadb_pid }}
+sql_mode = {{ mariadb_sql_mode }}
+log-error = {{ mariadb_log_error }}
+log-slave-updates
+log-warnings = {{ mariadb_log_warnings }}
+log-bin = {{ mariadb_log_bin }}
